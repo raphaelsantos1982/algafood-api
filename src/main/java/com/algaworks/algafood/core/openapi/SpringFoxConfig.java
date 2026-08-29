@@ -8,6 +8,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -23,7 +24,8 @@ public class SpringFoxConfig {
         .paths(PathSelectors.any())
 //      .paths(PathSelectors.ant("/restaurantes/*"))  // Configura o path /restaurantes/* a partir do path base declarado em .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api")). Funciona como filtro, nesse caso, a cima permite todos e nessa linha di z que do oath base somente configurar de restaurantes
         .build()
-    	.apiInfo(apiInfo()); // chama metodo implementado abaixo que descrevendo informações da API na documentação - titulo, descrição, versão, contato
+    	.apiInfo(apiInfo()) // chama metodo implementado abaixo que descrevendo informações da API na documentação - titulo, descrição, versão, contato
+    	.tags(new Tag("Cidades", "Gerencia as cidades"));
   }
   
   public ApiInfo apiInfo() {
