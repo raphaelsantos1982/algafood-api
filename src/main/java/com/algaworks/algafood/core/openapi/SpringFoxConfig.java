@@ -51,7 +51,8 @@ public class SpringFoxConfig {
         .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
         .additionalModels(typeResolver.resolve(Problem.class)) // Adiciona o modelo Problem à documentação da API. O modelo Problem é usado para representar erros na API, seguindo o padrão RFC 7807.
         .apiInfo(apiInfo()) // chama metodo implementado abaixo que descrevendo informações da API na documentação - titulo, descrição, versão, contato
-    	.tags(new Tag("Cidades", "Gerencia as cidades"));
+        .tags(new Tag("Cidades", "Gerencia as cidades"),
+        	  new Tag("Grupos", "Gerencia os grupos de usuários"));
   }
   
   private List<Response> globalPostPutResponseMessages() {
