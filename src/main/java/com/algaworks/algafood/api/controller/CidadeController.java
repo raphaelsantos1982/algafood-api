@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.assembler.CidadeModelAssembler;
+import com.algaworks.algafood.api.controller.openapi.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.input.CidadeInput;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
@@ -26,13 +27,10 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
-@Api(tags = "Cidades") // Anotação do Swagger para documentar o controller -> vinculado atraves de .tags(new Tag("Cidades", "Gerencia as cidades")); no apiDocket() em SpringFoxConfig
 @RestController
 @RequestMapping(value = "/cidades")
-public class CidadeController {
+public class CidadeController implements CidadeControllerOpenApi {
 
 	@Autowired
 	private CidadeRepository cidadeRepository;
@@ -45,8 +43,7 @@ public class CidadeController {
 
 	@Autowired
 	private CidadeInputDisassembler cidadeInputDisassembler; 
-	
-	@ApiOperation("Lista as cidades")
+		
 	@GetMapping
 	public List<CidadeModel> listar() {
 	    List<Cidade> todasCidades = cidadeRepository.findAll();
@@ -54,7 +51,36 @@ public class CidadeController {
 	    return cidadeModelAssembler.toCollectionModel(todasCidades);
 	}
 	
-	@ApiOperation("Busca uma cidade por ID") // Anotação do Swagger para documentar o método
+	
+	/*
+	 * IMPORTANTE !!!
+	 * Inconformidade com cenario do curso. -> "name = "corpo", value = "Representação de uma cidade com os novos dados"" no metodo  atualizar nao estao aparecendo no swagger
+	 * 
+	 * Diagnóstico
+	 * 
+	 * Não é um erro no seu código — é uma limitação conhecida do Springfox. Vi
+	 * confirmação em issues abertas no próprio repositório do Springfox (ex:
+	 * springfox#2248, springfox#1882).
+	 * 
+	 * O motivo: @ApiParam funciona bem para parâmetros individuais
+	 * como @PathVariable e @RequestParam — eles aparecem como linhas na tabela
+	 * Parameters, como você viu no cidadeId ("ID de uma cidade - teste [atualizar]"
+	 * apareceu certinho).
+	 * 
+	 * Mas para @RequestBody, o Swagger UI (na versão empacotada pelo Springfox) não
+	 * renderiza um parâmetro individual — ele mostra a seção Request body genérica,
+	 * baseada apenas no schema do objeto (via Example Value / Schema). O name/value
+	 * do @ApiParam colocado no parâmetro do método simplesmente não é usado para
+	 * gerar essa descrição — na especificação OpenAPI 2 (que o Springfox gera), o
+	 * "name" de um parâmetro body é fixo, e o value (descrição) não é propagado
+	 * pelo swagger-ui nessa seção.
+	 * 
+	 * Solução prática
+	 * 
+	 * A forma correta e confiável de documentar o corpo da requisição é anotar a
+	 * classe do DTO (CidadeInput), não o parâmetro do método:
+	 */
+	
 	@GetMapping("/{cidadeId}")
 	public CidadeModel buscar(@PathVariable Long cidadeId) {
 	    Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
@@ -72,7 +98,6 @@ public class CidadeController {
 //		return ResponseEntity.notFound().build();
 //	}
 	
-	@ApiOperation("Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeModel adicionar(@RequestBody @Valid CidadeInput cidadeInput) {
@@ -102,10 +127,9 @@ public class CidadeController {
 //	}
 	
 	
-	@ApiOperation("Atualiza uma cidade por ID")
 	@PutMapping("/{cidadeId}")
 	public CidadeModel atualizar(@PathVariable Long cidadeId,
-	        @RequestBody @Valid CidadeInput cidadeInput) {
+								 @RequestBody @Valid CidadeInput cidadeInput) {
 	    try {
 	        Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
 	        
@@ -143,7 +167,6 @@ public class CidadeController {
 //	}
 	
 	
-	@ApiOperation("Exclui uma cidade por ID")
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long cidadeId) {

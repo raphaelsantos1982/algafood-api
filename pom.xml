@@ -145,14 +145,31 @@
 			<artifactId>springfox-boot-starter</artifactId>
 			<version>${springfox.version}</version>
 		</dependency>
+
 		<!-- integrar com swagger-ui e gera a interface web da documentacao 
 			 Na chamada http://localhost:8080/swagger-ui/index.html faz uma requisicao em
-			 http://localhost:8080/v3/api-docs e a partir do json ele monta dinamicamente a documentacao
+			 http://localhost:8080/v3/api-docs e a partir do json ele monta dinamicamente a
+		documentacao
 		-->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.version}</version>
+		</dependency>
+
+		<!--
+			Biblioteca so Springfox pra integrar com Bean Validation (javax.validation) e
+		gerar a documentacao.
+		-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-bean-validators</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+
+		<dependency><!--Resolvendo o problema de serialização de OffsetDateTime. aula 18.14. Descrevendo o modelo de representação de problema-->
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 	</dependencies>
 
