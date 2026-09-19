@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import com.algaworks.algafood.api.assembler.CozinhaInputDisassembler;
 import com.algaworks.algafood.api.assembler.CozinhaModelAssembler;
 import com.algaworks.algafood.api.model.CozinhaModel;
 import com.algaworks.algafood.api.model.input.CozinhaInput;
+import com.algaworks.algafood.api.openapi.controller.CozinhaControllerOpenApi;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -31,7 +33,7 @@ import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 
 @RestController
 @RequestMapping(value = "/cozinhas")
-public class CozinhaController {
+public class CozinhaController implements CozinhaControllerOpenApi {
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
@@ -45,7 +47,7 @@ public class CozinhaController {
 	@Autowired
 	private CozinhaInputDisassembler cozinhaInputDisassembler;    
 	
-	@GetMapping // 13.8. Implementando paginação e ordenação em recursos de coleção da API // Padrao de elementos retornardo é 20
+	@GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)// 13.8. Implementando paginação e ordenação em recursos de coleção da API // Padrao de elementos retornardo é 20
 	public Page<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) { 
 		
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable); 
@@ -67,7 +69,7 @@ public class CozinhaController {
 //	    return cozinhaModelAssembler.toCollectionModel(todasCozinhas);
 //	}
 	
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
 	    Cozinha cozinha = cozinhaInputDisassembler.toDomainObject(cozinhaInput);
@@ -76,7 +78,7 @@ public class CozinhaController {
 	    return cozinhaModelAssembler.toModel(cozinha);
 	}
 
-	@PutMapping("/{cozinhaId}")
+	@PutMapping(value = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaModel atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInput cozinhaInput) {
 	    Cozinha cozinhaAtual = cadastroCozinha.buscarOuFalhar(cozinhaId);
 	    cozinhaInputDisassembler.copyToDomainObject(cozinhaInput, cozinhaAtual);
@@ -131,7 +133,7 @@ public class CozinhaController {
 //		}
 //	}	
 	
-	@GetMapping("/{cozinhaId}")
+	@GetMapping(value = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaModel buscar(@PathVariable Long cozinhaId) {
 	    Cozinha cozinha = cadastroCozinha.buscarOuFalhar(cozinhaId);
 	    

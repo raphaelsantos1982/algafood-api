@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +47,7 @@ public class FormaPagamentoController {
 	@Autowired
 	private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 	
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<FormaPagamentoModel>> listar(ServletWebRequest request) { // ResponseEntity quando precisa alterar o cabeçalho da resposta HTTP: status code, headers e body.
 		
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest()); // Desabilita o cache(ShallowEtagHeaderFilter configurado no WebConfig.java) de conteúdo para a requisição atual.
@@ -96,7 +97,7 @@ public class FormaPagamentoController {
 //		return formaPagamentoModelAssembler.toCollectionModel(todasFormasPagamentos);
 //	}
 	
-	@GetMapping("/{formaPagamentoId}")
+	@GetMapping(value = "/{formaPagamentoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
 		
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -132,7 +133,7 @@ public class FormaPagamentoController {
 //		return formaPagamentoModelAssembler.toModel(formaPagamento);
 //	}
 	
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoModel adicionar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
 		FormaPagamento formaPagamento = formaPagamentoInputDisassembler.toDomainObject(formaPagamentoInput);
@@ -142,7 +143,7 @@ public class FormaPagamentoController {
 		return formaPagamentoModelAssembler.toModel(formaPagamento);
 	}
 	
-	@PutMapping("/{formaPagamentoId}")
+	@PutMapping(value = "/{formaPagamentoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public FormaPagamentoModel atualizar(@PathVariable Long formaPagamentoId,
 			@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
 		FormaPagamento formaPagamentoAtual = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
