@@ -1,16 +1,26 @@
 package com.algaworks.algafood.core.web;
 
+import java.util.List;
+
 import javax.servlet.Filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Configuration
-public class WebConfig 
+public class WebConfig
 	implements WebMvcConfigurer { // Define metodos de callback para configurar o Spring MVC
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) { // Configura o mapeamento de CORS (Cross-Origin Resource Sharing) para permitir que recursos da API sejam acessados por diferentes origens (domínios). Isso é útil quando a aplicação front-end está hospedada em um domínio diferente do back-end.
@@ -18,6 +28,21 @@ public class WebConfig
 			.allowedMethods("*"); // permite que qualquer metodo HTTP seja aceito
 //			.allowedOrigins("*")
 //			.maxAge(30);
+	}
+
+	// O @EnableWebMvc (usado para o Springfox gerar a documentação) desliga a autoconfiguração
+	// padrão do Spring Boot para o Jackson, fazendo o Spring MVC montar seus próprios
+	// HttpMessageConverters com um ObjectMapper novo, isolado do bean gerenciado pelo Spring
+	// (o mesmo que o SquigglyConfig configura). Por isso o filtro de campos (?campos=) nunca
+	// tinha efeito: a resposta HTTP real era serializada por esse ObjectMapper "paralelo".
+	// Aqui forçamos os conversores Jackson a usarem o ObjectMapper correto (bean único do contexto).
+	@Override
+	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+		for (HttpMessageConverter<?> converter : converters) {
+			if (converter instanceof MappingJackson2HttpMessageConverter) {
+				((MappingJackson2HttpMessageConverter) converter).setObjectMapper(objectMapper);
+			}
+		}
 	}
 	
 	@Bean

@@ -1,6 +1,7 @@
 package com.algaworks.algafood.core.openapi;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -26,10 +27,13 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.RequestParameterBuilder;
 import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.schema.AlternateTypeRules;
+import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.ParameterType;
 import springfox.documentation.service.Response;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
@@ -56,6 +60,15 @@ public class SpringFoxConfig {
         .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
         .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
         .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+        .globalRequestParameters(Collections.singletonList(
+				new RequestParameterBuilder()
+						.name("campos")
+						.description("Nomes das propriedades para filtrar na resposta, separados por vírgula")
+						.in(ParameterType.QUERY)
+						.required(true)
+						.query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
+						.build())
+		) // Configura um parâmetro de requisição global para todos os endpoints da API. Nesse caso, estamos configurando um parâmetro de query chamado "campos" que permite filtrar as propriedades retornadas na resposta da API.
         .additionalModels(typeResolver.resolve(Problem.class)) // Adiciona o modelo Problem à documentação da API. O modelo Problem é usado para representar erros na API, seguindo o padrão RFC 7807.
         .ignoredParameterTypes(ServletWebRequest.class) // Ignora o parâmetro ServletWebRequest na documentação da API. O parâmetro ServletWebRequest é usado internamente pelo Spring para lidar com requisições HTTP, mas não é relevante para a documentação da API.
         .directModelSubstitute(Pageable.class, PageableModelOpenApi.class) // Substitui o modelo Pageable pelo modelo PageableModelOpenApi na documentação da API. O modelo Pageable é usado para representar paginação em consultas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
