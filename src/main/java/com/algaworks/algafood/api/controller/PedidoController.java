@@ -35,6 +35,9 @@ import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 import com.google.common.collect.ImmutableMap;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+
 @RestController
 @RequestMapping(value = "/pedidos")
 public class PedidoController {
@@ -54,6 +57,10 @@ public class PedidoController {
     @Autowired
     private PedidoInputDisassembler pedidoInputDisassembler;
     
+    @ApiImplicitParams({
+		@ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
+				name = "campos", paramType = "query", type = "string")
+    }) // implementando campos implicitos para o Swagger, para que ele saiba que existe um parametro de query chamado campos, que é uma string e serve para filtrar os campos da resposta
     @GetMapping
     public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
     	// 13.11. Implementando um conversor de propriedades de ordenação
@@ -106,6 +113,10 @@ public class PedidoController {
 //        return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
 //    }
    
+    @ApiImplicitParams({
+		@ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
+				name = "campos", paramType = "query", type = "string")
+    }) // implementando campos implicitos para o Swagger, para que ele saiba que existe um parametro de query chamado campos, que é uma string e serve para filtrar os campos da resposta
     @GetMapping("/{codigoPedido}") // 12.25. Usando IDs vs UUIDs nas URIs de recursos
 	public PedidoModel buscar(@PathVariable String codigoPedido) {
 		Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
