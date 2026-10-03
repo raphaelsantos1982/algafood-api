@@ -1,7 +1,6 @@
 package com.algaworks.algafood.core.openapi;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -17,8 +16,10 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.model.CozinhaModel;
+import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.openapi.model.CozinhasModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.PedidosResumoModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -27,13 +28,10 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.RequestParameterBuilder;
 import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.schema.AlternateTypeRules;
-import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
-import springfox.documentation.service.ParameterType;
 import springfox.documentation.service.Response;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
@@ -74,11 +72,15 @@ public class SpringFoxConfig {
         .alternateTypeRules(AlternateTypeRules.newRule(
 				typeResolver.resolve(Page.class, CozinhaModel.class),
 				CozinhasModelOpenApi.class)) // Substitui o modelo Page<CozinhaModel> pelo modelo CozinhasModelOpenApi na documentação da API. O modelo Page é usado para representar uma página de resultados em consultas paginadas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
+        .alternateTypeRules(AlternateTypeRules.newRule(
+				typeResolver.resolve(Page.class, PedidoResumoModel.class),
+				PedidosResumoModelOpenApi.class))
         .apiInfo(apiInfo()) // chama metodo implementado abaixo que descrevendo informações da API na documentação - titulo, descrição, versão, contato
         .tags(new Tag("Cidades", "Gerencia as cidades"),
         	  new Tag("Grupos", "Gerencia os grupos de usuários"),
         	  new Tag("Cozinhas", "Gerencia as cozinhas"),
-        	  new Tag("Formas de pagamento", "Gerencia as formas de pagamento"));
+        	  new Tag("Formas de pagamento", "Gerencia as formas de pagamento"),
+        	  new Tag("Pedidos", "Gerencia os pedidos"));
   }
   
   private List<Response> globalPostPutResponseMessages() {
