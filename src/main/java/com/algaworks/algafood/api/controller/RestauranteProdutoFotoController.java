@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.algaworks.algafood.api.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +36,7 @@ import com.algaworks.algafood.domain.service.FotoStorageService.FotoRecuperada;
 
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+public class RestauranteProdutoFotoController implements RestauranteProdutoFotoControllerOpenApi {
 	
 	@Autowired
 	private CadastroProdutoService cadastroProduto;
@@ -52,7 +53,7 @@ public class RestauranteProdutoFotoController {
 	@Autowired
 	private FotoProdutoModelAssembler fotoProdutoModelAssembler;
 	
-	@GetMapping
+	@GetMapping(produces = MediaType.ALL_VALUE)
 	public ResponseEntity<?> servir(@PathVariable Long restauranteId, 
 			@PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader) 
 					throws HttpMediaTypeNotAcceptableException {
