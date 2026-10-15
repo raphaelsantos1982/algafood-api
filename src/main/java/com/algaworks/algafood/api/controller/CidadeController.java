@@ -86,23 +86,28 @@ public class CidadeController implements CidadeControllerOpenApi {
 	
 	@GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeModel buscar(@PathVariable Long cidadeId) {
+		
 		Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
 
 		CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
 
-//		cidadeModel.add(Link.of("http://api.algafood.local:8080/cidades/1"));
-		cidadeModel.add(WebMvcLinkBuilder.linkTo(CidadeController.class)
-				.slash(cidadeModel.getId()).withSelfRel());
+		cidadeModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
+				.buscar(cidadeModel.getId())).withSelfRel()); // WebMvcLinkBuilder.methodOn -> Permite criar links para métodos de controladores, mesmo que eles tenham parâmetros. Ele cria um proxy do controlador e permite chamar o método desejado com os parâmetros necessários, retornando uma representação do link correspondente.
 
+//		cidadeModel.add(linkTo(CidadeController.class)
+//				.slash(cidadeModel.getId()).withSelfRel());
 
-//		cidadeModel.add(Link.of("http://api.algafood.local:8080/cidades", "cidades"));
-		cidadeModel.add(WebMvcLinkBuilder.linkTo(CidadeController.class)
-				.withRel("cidades"));
+		cidadeModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
+				.listar()).withRel("cidades"));
 
+//		cidadeModel.add(linkTo(CidadeController.class)
+//				.withRel("cidades"));
 
-//		cidadeModel.getEstado().add(Link.of("http://api.algafood.local:8080/estados/1"));
-		cidadeModel.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class)
-				.slash(cidadeModel.getEstado().getId()).withSelfRel());
+		cidadeModel.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class)
+				.buscar(cidadeModel.getEstado().getId())).withSelfRel());
+
+//		cidadeModel.getEstado().add(linkTo(EstadoController.class)
+//				.slash(cidadeModel.getEstado().getId()).withSelfRel());
 
 		return cidadeModel;
 	}
