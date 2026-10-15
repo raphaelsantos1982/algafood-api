@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,28 +49,10 @@ public class CidadeController implements CidadeControllerOpenApi {
 		
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<CidadeModel> listar() {
-		
-		List<Cidade> todasCidades = cidadeRepository.findAll();
-		
-		List<CidadeModel> cidadesModel = cidadeModelAssembler.toCollectionModel(todasCidades);
-		
-		cidadesModel.forEach(cidadeModel -> {
-			cidadeModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
-					.buscar(cidadeModel.getId())).withSelfRel());
-			
-			cidadeModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
-					.listar()).withRel("cidades"));
-			
-			cidadeModel.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class)
-					.buscar(cidadeModel.getEstado().getId())).withSelfRel());
-		});
-		
-		CollectionModel<CidadeModel> cidadesCollectionModel = CollectionModel.of(cidadesModel);
 
-		
-		cidadesCollectionModel.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
-		
-		return cidadesCollectionModel;
+		List<Cidade> todasCidades = cidadeRepository.findAll();
+
+		return cidadeModelAssembler.toCollectionModel(todasCidades);
 	}
 	
 	
@@ -106,30 +87,9 @@ public class CidadeController implements CidadeControllerOpenApi {
 	
 	@GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeModel buscar(@PathVariable Long cidadeId) {
-		
 		Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
 
-		CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
-
-		cidadeModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
-				.buscar(cidadeModel.getId())).withSelfRel()); // WebMvcLinkBuilder.methodOn -> Permite criar links para métodos de controladores, mesmo que eles tenham parâmetros. Ele cria um proxy do controlador e permite chamar o método desejado com os parâmetros necessários, retornando uma representação do link correspondente.
-
-//		cidadeModel.add(linkTo(CidadeController.class)
-//				.slash(cidadeModel.getId()).withSelfRel());
-
-		cidadeModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
-				.listar()).withRel("cidades"));
-
-//		cidadeModel.add(linkTo(CidadeController.class)
-//				.withRel("cidades"));
-
-		cidadeModel.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class)
-				.buscar(cidadeModel.getEstado().getId())).withSelfRel());
-
-//		cidadeModel.getEstado().add(linkTo(EstadoController.class)
-//				.slash(cidadeModel.getEstado().getId()).withSelfRel());
-
-		return cidadeModel;
+		return cidadeModelAssembler.toModel(cidade);
 	}
 //	@GetMapping("/{cidadeId}")
 //	public ResponseEntity<Cidade> buscar(@PathVariable Long cidadeId) {
