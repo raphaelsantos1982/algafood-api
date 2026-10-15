@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,10 +49,29 @@ public class CidadeController implements CidadeControllerOpenApi {
 	private CidadeInputDisassembler cidadeInputDisassembler; 
 		
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CidadeModel> listar() {
-	    List<Cidade> todasCidades = cidadeRepository.findAll();
-	    
-	    return cidadeModelAssembler.toCollectionModel(todasCidades);
+	public CollectionModel<CidadeModel> listar() {
+		
+		List<Cidade> todasCidades = cidadeRepository.findAll();
+		
+		List<CidadeModel> cidadesModel = cidadeModelAssembler.toCollectionModel(todasCidades);
+		
+		cidadesModel.forEach(cidadeModel -> {
+			cidadeModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
+					.buscar(cidadeModel.getId())).withSelfRel());
+			
+			cidadeModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
+					.listar()).withRel("cidades"));
+			
+			cidadeModel.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class)
+					.buscar(cidadeModel.getEstado().getId())).withSelfRel());
+		});
+		
+		CollectionModel<CidadeModel> cidadesCollectionModel = CollectionModel.of(cidadesModel);
+
+		
+		cidadesCollectionModel.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
+		
+		return cidadesCollectionModel;
 	}
 	
 	
