@@ -68,7 +68,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 	    // GET /pedidos?sort=nomeCliente
 	    // GET /pedidos?sort=client.nome
     	// facilita o usuario passar os nomes de campos mais que ele prefere e o conversor mapeia para o campo corretamente
-Pageable pageableTraduzido = traduzirPageable(pageable);
+    	Pageable pageableTraduzido = traduzirPageable(pageable);
 		
 		Page<Pedido> pedidosPage = pedidoRepository.findAll(
 				PedidoSpecs.usandoFiltro(filtro), pageableTraduzido);
