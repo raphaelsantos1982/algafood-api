@@ -1,14 +1,13 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,12 +54,15 @@ public class PedidoController implements PedidoControllerOpenApi {
     @Autowired
     private PedidoInputDisassembler pedidoInputDisassembler;
     
+    @Autowired
+    private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
+    
 //    @ApiImplicitParams({ // COMENTADO NA AULA 18.27. Desafio: descrevendo documentação de endpoints de pedidos
 //		@ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
 //				name = "campos", paramType = "query", type = "string")
 //    }) // implementando campos implicitos para o Swagger, para que ele saiba que existe um parametro de query chamado campos, que é uma string e serve para filtrar os campos da resposta
     @GetMapping
-    public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+    public PagedModel<PedidoResumoModel> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
     	// 13.11. Implementando um conversor de propriedades de ordenação
 	    // GET /pedidos?sort=nomeCliente
 	    // GET /pedidos?sort=client.nome
@@ -70,13 +72,13 @@ public class PedidoController implements PedidoControllerOpenApi {
         Page<Pedido> pedidosPage = pedidoRepository.findAll(
                 PedidoSpecs.usandoFiltro(filtro), pageable);
         
-        List<PedidoResumoModel> pedidosResumoModel = pedidoResumoModelAssembler
-                .toCollectionModel(pedidosPage.getContent());
-        
-        Page<PedidoResumoModel> pedidosResumoModelPage = new PageImpl<>(
-                pedidosResumoModel, pageable, pedidosPage.getTotalElements());
-        
-        return pedidosResumoModelPage;
+        return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
+//        List<PedidoResumoModel> pedidosResumoModel = pedidoResumoModelAssembler
+//                .toCollectionModel(pedidosPage.getContent());
+//        
+//        Page<PedidoResumoModel> pedidosResumoModelPage = new PageImpl<>(
+//                pedidosResumoModel, pageable, pedidosPage.getTotalElements());
+//        return pedidosResumoModelPage;
     }
 //    @GetMapping
 //	public List<PedidoResumoModel> pesquisar(PedidoFilter filtro) {
