@@ -24,6 +24,7 @@ import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.input.PedidoInput;
 import com.algaworks.algafood.api.openapi.controller.PedidoControllerOpenApi;
+import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -67,12 +68,14 @@ public class PedidoController implements PedidoControllerOpenApi {
 	    // GET /pedidos?sort=nomeCliente
 	    // GET /pedidos?sort=client.nome
     	// facilita o usuario passar os nomes de campos mais que ele prefere e o conversor mapeia para o campo corretamente
-    	pageable = traduzirPageable(pageable);
-    	
-        Page<Pedido> pedidosPage = pedidoRepository.findAll(
-                PedidoSpecs.usandoFiltro(filtro), pageable);
-        
-        return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
+Pageable pageableTraduzido = traduzirPageable(pageable);
+		
+		Page<Pedido> pedidosPage = pedidoRepository.findAll(
+				PedidoSpecs.usandoFiltro(filtro), pageableTraduzido);
+		
+		pedidosPage = new PageWrapper<>(pedidosPage, pageable);
+		
+		return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
 //        List<PedidoResumoModel> pedidosResumoModel = pedidoResumoModelAssembler
 //                .toCollectionModel(pedidosPage.getContent());
 //        
