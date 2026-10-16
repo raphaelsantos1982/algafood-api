@@ -38,10 +38,18 @@ public class PedidoModelAssembler  extends RepresentationModelAssemblerSupport<P
 				new TemplateVariable("page", VariableType.REQUEST_PARAM),
 				new TemplateVariable("size", VariableType.REQUEST_PARAM),
 				new TemplateVariable("sort", VariableType.REQUEST_PARAM));
+        
+        TemplateVariables filtroVariables = new TemplateVariables(
+				new TemplateVariable("clienteId", VariableType.REQUEST_PARAM),
+				new TemplateVariable("restauranteId", VariableType.REQUEST_PARAM),
+				new TemplateVariable("dataCriacaoInicio", VariableType.REQUEST_PARAM),
+				new TemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM));
 		
 		String pedidosUrl = WebMvcLinkBuilder.linkTo(PedidoController.class).toUri().toString();
 		
-		pedidoModel.add(Link.of(UriTemplate.of(pedidosUrl, pageVariables), "pedidos")); // UriTemplate.of() cria uma URI com variáveis de template(...pedidos{?page,size,sort}"), e Link.of() cria um link HATEOAS com essa URI e o rel "pedidos"
+		pedidoModel.add(Link.of(UriTemplate.of(pedidosUrl, 
+				pageVariables.concat(filtroVariables)), "pedidos")); // UriTemplate.of() cria uma URI com variáveis de template(...pedidos{?page,size,sort}"), e Link.of() cria um link HATEOAS com essa URI e o rel "pedidos"
+//		pedidoModel.add(Link.of(UriTemplate.of(pedidosUrl, pageVariables), "pedidos")); // UriTemplate.of() cria uma URI com variáveis de template(...pedidos{?page,size,sort}"), e Link.of() cria um link HATEOAS com essa URI e o rel "pedidos"
 //        pedidoModel.add(WebMvcLinkBuilder.linkTo(PedidoController.class).withRel("pedidos"));
         
         pedidoModel.getRestaurante().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RestauranteController.class)
