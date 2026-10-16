@@ -1,14 +1,13 @@
-package com.algaworks.algafood.api.controller;
-
-import java.util.List;
+	package com.algaworks.algafood.api.controller;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,23 +44,35 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	private CozinhaModelAssembler cozinhaModelAssembler;
 
 	@Autowired
-	private CozinhaInputDisassembler cozinhaInputDisassembler;    
+	private CozinhaInputDisassembler cozinhaInputDisassembler;
 	
-	@GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)// 13.8. Implementando paginação e ordenação em recursos de coleção da API // Padrao de elementos retornardo é 20
-	public Page<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) { 
-		
-		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable); 
-		
-		List<CozinhaModel> cozinhasModel = cozinhaModelAssembler
-				.toCollectionModel(cozinhasPage.getContent());
-		
-		// Para exibir o total de intens, teve que alterar o retorno do metodo de List<CozinhaModel> para Page<CozinhaModel>
-		// e acrescentar essa alteração
-		Page<CozinhaModel> cozinhasModelPage = new PageImpl<>(cozinhasModel, pageable, 
-				cozinhasPage.getTotalElements());
-		
-		return cozinhasModelPage;
+	@Autowired
+	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
+	
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
+		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
+
+		PagedModel<CozinhaModel> cozinhasPagedModel = pagedResourcesAssembler.toModel(cozinhasPage, cozinhaModelAssembler);
+
+		return cozinhasPagedModel;
 	}
+//	@GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)// 13.8. Implementando paginação e ordenação em recursos de coleção da API // Padrao de elementos retornardo é 20
+//	public Page<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) { 
+//		
+//		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable); 
+//		
+//		List<CozinhaModel> cozinhasModel = cozinhaModelAssembler
+//				.toCollectionModel(cozinhasPage.getContent());
+//		
+//		// Para exibir o total de intens, teve que alterar o retorno do metodo de List<CozinhaModel> para Page<CozinhaModel>
+//		// e acrescentar essa alteração
+//		Page<CozinhaModel> cozinhasModelPage = new PageImpl<>(cozinhasModel, pageable, 
+//				cozinhasPage.getTotalElements());
+//		
+//		return cozinhasModelPage;
+//	}
 //	@GetMapping
 //	public List<CozinhaModel> listar() {
 //	    List<Cozinha> todasCozinhas = cozinhaRepository.findAll();
