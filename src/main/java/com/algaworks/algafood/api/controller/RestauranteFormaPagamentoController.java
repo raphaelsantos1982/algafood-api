@@ -54,7 +54,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 	}
 	
 	@Override
-	@DeleteMapping("/{formaPagamentoId}")
+	@DeleteMapping("/{formaPagamentoId}") // //restauranteId faz bind com o restauranteId passado na parte do path que esta na declaração do controller @RequestMapping(value = "/restaurantes/{restauranteId}/formas-pagamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> desassociar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
 		cadastroRestaurante.desassociarFormaPagamento(restauranteId, formaPagamentoId);
