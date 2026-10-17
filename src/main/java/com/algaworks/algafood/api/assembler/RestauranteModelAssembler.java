@@ -38,11 +38,25 @@ public class RestauranteModelAssembler
 		restauranteModel.getEndereco().getCidade().add(
 				algaLinks.linkToCidade(restaurante.getEndereco().getCidade().getId()));
 		
-		restauranteModel.add(algaLinks.linkToRestauranteFormasPagamento(restaurante.getId(), 
-				"formas-pagamento"));
+		restauranteModel.add(algaLinks.linkToRestauranteFormasPagamento(restaurante.getId(), "formas-pagamento"));
 		
-		restauranteModel.add(algaLinks.linkToRestauranteResponsaveis(restaurante.getId(), 
-				"responsaveis"));
+		restauranteModel.add(algaLinks.linkToRestauranteResponsaveis(restaurante.getId(), "responsaveis"));
+		
+		if (restaurante.ativacaoPermitida()) {
+			restauranteModel.add(algaLinks.linkToRestauranteAtivacao(restaurante.getId(), "ativar"));
+		}
+
+		if (restaurante.inativacaoPermitida()) {
+			restauranteModel.add(algaLinks.linkToRestauranteInativacao(restaurante.getId(), "inativar"));
+		}
+
+		if (restaurante.aberturaPermitida()) {
+			restauranteModel.add(algaLinks.linkToRestauranteAbertura(restaurante.getId(), "abrir"));
+		}
+
+		if (restaurante.fechamentoPermitido()) {
+			restauranteModel.add(algaLinks.linkToRestauranteFechamento(restaurante.getId(), "fechar"));
+		}
 		
 		return restauranteModel;
 	}
