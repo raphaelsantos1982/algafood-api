@@ -3,9 +3,9 @@ package com.algaworks.algafood.api.assembler;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controller.CozinhaController;
 import com.algaworks.algafood.api.model.CozinhaModel;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -17,6 +17,9 @@ public class CozinhaModelAssembler
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private AlgaLinks algaLinks;
+	
 	public CozinhaModelAssembler() {
 		super(CozinhaController.class, CozinhaModel.class);
 	}
@@ -26,10 +29,10 @@ public class CozinhaModelAssembler
 		
 		CozinhaModel cozinhaModel = createModelWithId(cozinha.getId(), cozinha); // createModelWithId cria um link para o recurso representado pelo modelo, usando o ID do recurso e a classe do controlador que lida com ele
 		modelMapper.map(cozinha, cozinhaModel);
-
-		cozinhaModel.add(WebMvcLinkBuilder.linkTo(CozinhaController.class).withRel("cozinhas"));
-
-		return cozinhaModel;
+		    
+	    cozinhaModel.add(algaLinks.linkToCozinhas("cozinhas"));
+		    
+	    return cozinhaModel;
 //		return modelMapper.map(cozinha, CozinhaModel.class);
 	}
 	
