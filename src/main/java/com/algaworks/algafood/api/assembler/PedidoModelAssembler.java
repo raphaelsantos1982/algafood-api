@@ -11,6 +11,7 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controller.CidadeController;
 import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.controller.PedidoController;
@@ -26,6 +27,10 @@ public class PedidoModelAssembler  extends RepresentationModelAssemblerSupport<P
     @Autowired
     private ModelMapper modelMapper;
     
+	
+	@Autowired
+	private AlgaLinks algaLinks;
+    
     public PedidoModelAssembler() {
         super(PedidoController.class, PedidoModel.class);
     }
@@ -34,23 +39,8 @@ public class PedidoModelAssembler  extends RepresentationModelAssemblerSupport<P
     	PedidoModel pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoModel);
         
-        TemplateVariables pageVariables = new TemplateVariables(
-				new TemplateVariable("page", VariableType.REQUEST_PARAM),
-				new TemplateVariable("size", VariableType.REQUEST_PARAM),
-				new TemplateVariable("sort", VariableType.REQUEST_PARAM));
         
-        TemplateVariables filtroVariables = new TemplateVariables(
-				new TemplateVariable("clienteId", VariableType.REQUEST_PARAM),
-				new TemplateVariable("restauranteId", VariableType.REQUEST_PARAM),
-				new TemplateVariable("dataCriacaoInicio", VariableType.REQUEST_PARAM),
-				new TemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM));
-		
-		String pedidosUrl = WebMvcLinkBuilder.linkTo(PedidoController.class).toUri().toString();
-		
-		pedidoModel.add(Link.of(UriTemplate.of(pedidosUrl, 
-				pageVariables.concat(filtroVariables)), "pedidos")); // UriTemplate.of() cria uma URI com variáveis de template(...pedidos{?page,size,sort}"), e Link.of() cria um link HATEOAS com essa URI e o rel "pedidos"
-//		pedidoModel.add(Link.of(UriTemplate.of(pedidosUrl, pageVariables), "pedidos")); // UriTemplate.of() cria uma URI com variáveis de template(...pedidos{?page,size,sort}"), e Link.of() cria um link HATEOAS com essa URI e o rel "pedidos"
-//        pedidoModel.add(WebMvcLinkBuilder.linkTo(PedidoController.class).withRel("pedidos"));
+        pedidoModel.add(algaLinks.linkToPedidos()); // Adiciona link para a lista de pedidos
         
         pedidoModel.getRestaurante().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RestauranteController.class)
                 .buscar(pedido.getRestaurante().getId())).withSelfRel());
