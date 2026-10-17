@@ -1,10 +1,8 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.FormaPagamentoModelAssembler;
 import com.algaworks.algafood.api.model.FormaPagamentoModel;
 import com.algaworks.algafood.api.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
@@ -29,11 +28,17 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 	@Autowired
 	private FormaPagamentoModelAssembler formaPagamentoModelAssembler;
 	
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<FormaPagamentoModel> listar(@PathVariable Long restauranteId) {
-		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
-		
-		return formaPagamentoModelAssembler.toCollectionModel(restaurante.getFormasPagamento());
+	@Autowired
+	private AlgaLinks algaLinks;
+	
+	@Override
+	@GetMapping
+	public CollectionModel<FormaPagamentoModel> listar(@PathVariable Long restauranteId) {
+	    Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
+	    
+	    return formaPagamentoModelAssembler.toCollectionModel(restaurante.getFormasPagamento())
+	            .removeLinks()
+	            .add(algaLinks.linkToRestauranteFormasPagamento(restauranteId));
 	}
 	
 	@DeleteMapping("/{formaPagamentoId}") //restauranteId faz bind com o restauranteId passado na parte do path que esta na declaração do controller @RequestMapping(value = "/restaurantes/{restauranteId}/formas-pagamento")
