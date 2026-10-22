@@ -1,4 +1,4 @@
-package com.algaworks.algafood.core.openapi;
+package com.algaworks.algafood.core.springfox;
 
 import java.io.File;
 import java.io.InputStream;
@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.model.CozinhaModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.openapi.model.CozinhasModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PedidosResumoModelOpenApi;
 import com.ctc.wstx.shaded.msv_core.util.Uri;
@@ -81,6 +83,7 @@ public class SpringFoxConfig {
         .additionalModels(typeResolver.resolve(Problem.class)) // Adiciona o modelo Problem à documentação da API. O modelo Problem é usado para representar erros na API, seguindo o padrão RFC 7807.
         .ignoredParameterTypes(ServletWebRequest.class, URL.class, Uri.class, URLStreamHandler.class, Resource.class, File.class, InputStream.class) // Ignora o parâmetro ServletWebRequest na documentação da API. O parâmetro ServletWebRequest é usado internamente pelo Spring para lidar com requisições HTTP, mas não é relevante para a documentação da API.
         .directModelSubstitute(Pageable.class, PageableModelOpenApi.class) // Substitui o modelo Pageable pelo modelo PageableModelOpenApi na documentação da API. O modelo Pageable é usado para representar paginação em consultas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
+        .directModelSubstitute(Links.class, LinksModelOpenApi.class)
         .alternateTypeRules(AlternateTypeRules.newRule(
 				typeResolver.resolve(Page.class, CozinhaModel.class),
 				CozinhasModelOpenApi.class)) // Substitui o modelo Page<CozinhaModel> pelo modelo CozinhasModelOpenApi na documentação da API. O modelo Page é usado para representar uma página de resultados em consultas paginadas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
