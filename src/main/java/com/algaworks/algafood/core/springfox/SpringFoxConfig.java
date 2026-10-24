@@ -101,7 +101,7 @@ public class SpringFoxConfig {
         		typeResolver.resolve(PagedModel.class, CozinhaModel.class), // Substitui o modelo PagedModel<CozinhaModel> pelo modelo CozinhasModelOpenApi na documentação da API. O modelo PagedModel é usado para representar uma página de resultados em consultas paginadas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
         		CozinhasModelOpenApi.class)) 
         .alternateTypeRules(AlternateTypeRules.newRule(
-				typeResolver.resolve(Page.class, PedidoResumoModel.class),
+				typeResolver.resolve(PagedModel.class, PedidoResumoModel.class),
 				PedidosResumoModelOpenApi.class))
         .alternateTypeRules(AlternateTypeRules.newRule(
 				typeResolver.resolve(CollectionModel.class, CidadeModel.class),
@@ -115,7 +115,6 @@ public class SpringFoxConfig {
         .alternateTypeRules(AlternateTypeRules.newRule(
         	    typeResolver.resolve(CollectionModel.class, GrupoModel.class),
         	    GruposModelOpenApi.class))
-
         	.alternateTypeRules(AlternateTypeRules.newRule(
         	        typeResolver.resolve(CollectionModel.class, PermissaoModel.class),
         	        PermissoesModelOpenApi.class))
