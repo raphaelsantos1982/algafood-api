@@ -18,7 +18,12 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "Formas de pagamento")
 public interface FormaPagamentoControllerOpenApi {
 
-	@ApiOperation(value = "Lista as formas de pagamento", response = FormasPagamentoModelOpenApi.class)
+//	Mesmo usando o swagger v3, note que as anotações @ApiOperation , @ApiResponses e @ApiResponse possuem duas versões que 
+//	podem ser usadas , a da v2 e a da v3. Para solucionar esse caso, usei anotações da v2. Vejam como ficou meu código:
+	@ApiOperation(value = "Lista as formas de pagamento")
+	@io.swagger.annotations.ApiResponses(value = {
+	@io.swagger.annotations.ApiResponse(code = 200, message = "OK", response = FormasPagamentoModelOpenApi.class)
+	}) // 
 	ResponseEntity<CollectionModel<FormaPagamentoModel>> listar(ServletWebRequest request);
 
 	@ApiOperation("Busca uma forma de pagamento por ID")
