@@ -26,6 +26,7 @@ import com.algaworks.algafood.api.controller.EstatisticasController;
 import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.CozinhaModel;
+import com.algaworks.algafood.api.model.EstadoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.openapi.model.CidadesModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.CozinhasModelOpenApi;
@@ -98,6 +99,9 @@ public class SpringFoxConfig {
         .alternateTypeRules(AlternateTypeRules.newRule(
 				typeResolver.resolve(CollectionModel.class, CidadeModel.class),
 				CidadesModelOpenApi.class))
+        .alternateTypeRules(AlternateTypeRules.newRule(
+                typeResolver.resolve(CollectionModel.class, EstadoModel.class),
+                EstadosModelOpenApi.class))
         .apiInfo(apiInfo()) // chama metodo implementado abaixo que descrevendo informações da API na documentação - titulo, descrição, versão, contato
         .tags(new Tag("Cidades", "Gerencia as cidades"),
         	  new Tag("Grupos", "Gerencia os grupos de usuários"),
