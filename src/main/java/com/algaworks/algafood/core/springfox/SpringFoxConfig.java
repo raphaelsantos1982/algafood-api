@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -88,8 +89,9 @@ public class SpringFoxConfig {
         .directModelSubstitute(Pageable.class, PageableModelOpenApi.class) // Substitui o modelo Pageable pelo modelo PageableModelOpenApi na documentação da API. O modelo Pageable é usado para representar paginação em consultas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
         .directModelSubstitute(Links.class, LinksModelOpenApi.class)
         .alternateTypeRules(AlternateTypeRules.newRule(
-				typeResolver.resolve(Page.class, CozinhaModel.class),
-				CozinhasModelOpenApi.class)) // Substitui o modelo Page<CozinhaModel> pelo modelo CozinhasModelOpenApi na documentação da API. O modelo Page é usado para representar uma página de resultados em consultas paginadas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
+//				typeResolver.resolve(Page.class, CozinhaModel.class), // Substitui o modelo Page<CozinhaModel> pelo modelo CozinhasModelOpenApi na documentação da API. O modelo Page é usado para representar uma página de resultados em consultas paginadas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
+        		typeResolver.resolve(PagedModel.class, CozinhaModel.class), // Substitui o modelo PagedModel<CozinhaModel> pelo modelo CozinhasModelOpenApi na documentação da API. O modelo PagedModel é usado para representar uma página de resultados em consultas paginadas, mas não é bem representado na documentação do Swagger. Por isso, criamos um modelo específico para a documentação.
+        		CozinhasModelOpenApi.class)) 
         .alternateTypeRules(AlternateTypeRules.newRule(
 				typeResolver.resolve(Page.class, PedidoResumoModel.class),
 				PedidosResumoModelOpenApi.class))
