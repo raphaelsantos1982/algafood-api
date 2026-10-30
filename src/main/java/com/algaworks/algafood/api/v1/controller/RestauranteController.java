@@ -55,7 +55,7 @@ import io.swagger.annotations.ApiOperation;
 
 //@CrossOrigin(maxAge = 10)  // 16.4. Habilitando CORS para todos os controladores
 @RestController
-@RequestMapping(value = "/restaurantes")
+@RequestMapping(value = "/v1/restaurantes")
 public class RestauranteController implements RestauranteControllerOpenApi {
 
 	@Autowired

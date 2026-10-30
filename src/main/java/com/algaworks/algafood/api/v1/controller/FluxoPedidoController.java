@@ -13,7 +13,7 @@ import com.algaworks.algafood.api.v1.openapi.controller.FluxoPedidoControllerOpe
 import com.algaworks.algafood.domain.service.FluxoPedidoService;
 
 @RestController
-@RequestMapping(value = "/pedidos/{codigoPedido}") // /pedidos/{pedidoId}") -> 12.25. Usando IDs vs UUIDs nas URIs de recursos
+@RequestMapping(value = "/v1/pedidos/{codigoPedido}") // /pedidos/{pedidoId}") -> 12.25. Usando IDs vs UUIDs nas URIs de recursos
 public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
 	@Autowired

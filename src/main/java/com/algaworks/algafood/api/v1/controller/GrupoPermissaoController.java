@@ -20,7 +20,7 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
 
 @RestController
-@RequestMapping(value = "/grupos/{grupoId}/permissoes")
+@RequestMapping(value = "/v1/grupos/{grupoId}/permissoes")
 public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi {
 
 	@Autowired

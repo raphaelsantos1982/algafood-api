@@ -37,7 +37,7 @@ import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 import com.google.common.collect.ImmutableMap;
 
 @RestController
-@RequestMapping(value = "/pedidos")
+@RequestMapping(value = "/v1/pedidos")
 public class PedidoController implements PedidoControllerOpenApi {
 
     @Autowired

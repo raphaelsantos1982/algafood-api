@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/restaurantes/{restauranteId}/responsaveis")
+@RequestMapping(path = "/v1/restaurantes/{restauranteId}/responsaveis")
 public class RestauranteUsuarioResponsavelController implements RestauranteUsuarioResponsavelControllerOpenApi {
 
 	@Autowired

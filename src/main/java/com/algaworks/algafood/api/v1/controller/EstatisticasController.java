@@ -21,7 +21,7 @@ import com.algaworks.algafood.domain.service.VendaReportService;
 
 // 13.14. Implementando consulta com dados agregados de vendas diárias
 @RestController
-@RequestMapping(path = "/estatisticas")
+@RequestMapping(path = "/v1/estatisticas")
 public class EstatisticasController implements EstatisticasControllerOpenApi {
 
 	@Autowired
