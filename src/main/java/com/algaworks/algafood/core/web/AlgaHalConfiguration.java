@@ -13,7 +13,8 @@ public class AlgaHalConfiguration {
 											//  ativa o formato HAL quando tem mediaType customizado
 		return new HalConfiguration()
 				.withMediaType(MediaType.APPLICATION_JSON)
-				.withMediaType(AlgaMediaTypes.V1_APPLICATION_JSON);
+				.withMediaType(AlgaMediaTypes.V1_APPLICATION_JSON)
+				.withMediaType(AlgaMediaTypes.V2_APPLICATION_JSON);
 	}
 	
 }
