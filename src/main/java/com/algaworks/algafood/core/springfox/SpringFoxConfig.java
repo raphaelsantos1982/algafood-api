@@ -2,6 +2,7 @@ package com.algaworks.algafood.core.springfox;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.util.Arrays;
@@ -74,14 +75,15 @@ public class SpringFoxConfig {
 	}
 
   @Bean
-  public Docket apiDocket() { // Docket(Sumario) -> Configuração do Swagger para gerar documentação da API - Comfigura o conjunto de serviços que devem ser documentados
+  public Docket apiDocketV1() { // Docket(Sumario) -> Configuração do Swagger para gerar documentação da API - Comfigura o conjunto de serviços que devem ser documentados
 	  var typeResolver = new TypeResolver();
 		
 	  return new Docket(DocumentationType.OAS_30) // OAS_30 -> OpenAPI Specification 3.0
-        .select() // Seleciona os endpoints que devem ser documentados. 
+		.groupName("V1")
+        .select() // SELECIONA OS ENDPOINTS QUE DEVEM SER DOCUMENTADOS. 
         .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api")) // Configura o pacote base onde estão os controllers da API
           //.apis(RequestHandlerSelectors.any()) // Seleciona todos os controladores da aplicação para serem documentados
-        .paths(PathSelectors.any())
+        .paths(PathSelectors.ant("/v1/**"))
 //      .paths(PathSelectors.ant("/restaurantes/*"))  // Configura o path /restaurantes/* a partir do path base declarado em .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api")). Funciona como filtro, nesse caso, a cima permite todos e nessa linha di z que do oath base somente configurar de restaurantes
         .build()
         .useDefaultResponseMessages(false)
@@ -132,7 +134,7 @@ public class SpringFoxConfig {
 		.alternateTypeRules(AlternateTypeRules.newRule(
 		        typeResolver.resolve(CollectionModel.class, UsuarioModel.class),
 		        UsuariosModelOpenApi.class))
-        .apiInfo(apiInfo()) // chama metodo implementado abaixo que descrevendo informações da API na documentação - titulo, descrição, versão, contato
+        .apiInfo(apiInfoV1()) // chama metodo implementado abaixo que descrevendo informações da API na documentação - titulo, descrição, versão, contato
         .tags(new Tag("Cidades", "Gerencia as cidades"),
         	  new Tag("Grupos", "Gerencia os grupos de usuários"),
         	  new Tag("Cozinhas", "Gerencia as cozinhas"),
@@ -145,6 +147,31 @@ public class SpringFoxConfig {
 			  new Tag("Estatísticas", "Estatísticas da AlgaFood"),
 			  new Tag("Permissões", "Gerencia as permissões"));
   }
+  
+	@Bean
+	public Docket apiDocketV2() {
+		var typeResolver = new TypeResolver();
+
+		return new Docket(DocumentationType.OAS_30)
+				.groupName("V2")
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
+				.paths(PathSelectors.ant("/v2/**"))
+				.build()
+				.useDefaultResponseMessages(false)
+				.globalResponses(HttpMethod.GET, globalGetResponseMessages())
+				.globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
+				.globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
+				.globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+				.additionalModels(typeResolver.resolve(Problem.class))
+				.ignoredParameterTypes(ServletWebRequest.class,
+						URL.class, URI.class, URLStreamHandler.class, Resource.class,
+						File.class, InputStream.class)
+				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+				.directModelSubstitute(Links.class, LinksModelOpenApi.class)
+
+				.apiInfo(apiInfoV2());
+	}
   
   private List<Response> globalPostPutResponseMessages() {
 	    return Arrays.asList(
@@ -216,11 +243,21 @@ public class SpringFoxConfig {
 	            .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(
 	                    q -> q.name("Problema").namespace("com.algaworks.algafood.api.exceptionhandler")))));
 	}
-  public ApiInfo apiInfo() {
+  
+  public ApiInfo apiInfoV1() { 
 		return new ApiInfoBuilder()
 				.title("AlgaFood API")
 				.description("API aberta para clientes e restaurantes")
 				.version("1")
+				.contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
+				.build();
+	}
+  
+  private ApiInfo apiInfoV2() {
+		return new ApiInfoBuilder()
+				.title("AlgaFood API")
+				.description("API aberta para clientes e restaurantes")
+				.version("2")
 				.contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
 				.build();
 	}
