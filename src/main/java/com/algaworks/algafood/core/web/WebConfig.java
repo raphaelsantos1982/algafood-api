@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -17,10 +18,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 public class WebConfig
-	implements WebMvcConfigurer { // Define metodos de callback para configurar o Spring MVC
+	implements WebMvcConfigurer { // Define metodos de callback para configurar o Spring MVC 
+								  // - metodos de callback sao chamados pelo Spring MVC durante a inicialização da aplicação para permitir que você personalize o comportamento do framework. Ao implementar essa interface, você pode sobrescrever os métodos de callback para adicionar suas próprias configurações, como interceptadores, conversores de mensagem, manipuladores de exceção, entre outros.
+								
 
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Override
+	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+		configurer.defaultContentType(AlgaMediaTypes.V2_APPLICATION_JSON);
+	}
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) { // Configura o mapeamento de CORS (Cross-Origin Resource Sharing) para permitir que recursos da API sejam acessados por diferentes origens (domínios). Isso é útil quando a aplicação front-end está hospedada em um domínio diferente do back-end.
