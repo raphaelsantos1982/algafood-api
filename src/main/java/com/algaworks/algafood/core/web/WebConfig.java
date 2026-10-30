@@ -25,6 +25,8 @@ public class WebConfig
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+	// NAO ESTA SENDO USADA DESDE O CAPITULO 20.13. Implementando o versionamento da API por URI
+	// PRA VOLTAR A USAR QTEM QUE ALTERAR O PRODUCER LA NOS CONTROLLER DE CIDADES
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
 		configurer.defaultContentType(AlgaMediaTypes.V2_APPLICATION_JSON);

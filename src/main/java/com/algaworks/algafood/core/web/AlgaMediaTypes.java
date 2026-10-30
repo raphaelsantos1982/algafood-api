@@ -2,6 +2,8 @@ package com.algaworks.algafood.core.web;
 
 import org.springframework.http.MediaType;
 
+// NAO ESTA SENDO USADA DESDE O CAPITULO 20.13. Implementando o versionamento da API por URI
+// PRA VOLTAR A USAR QTEM QUE ALTERAR O PRODUCER LA NOS CONTROLLER DE CIDADES
 public class AlgaMediaTypes {
 
 	public static final String V1_APPLICATION_JSON_VALUE = "application/vnd.algafood.v1+json";
