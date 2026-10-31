@@ -12,6 +12,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,10 @@ public class WebConfig
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+
+	@Autowired
+	private ApiDeprecationHandler apiDeprecationHandler;
+	
 	// NAO ESTA SENDO USADA DESDE O CAPITULO 20.13. Implementando o versionamento da API por URI
 	// PRA VOLTAR A USAR QTEM QUE ALTERAR O PRODUCER LA NOS CONTROLLER DE CIDADES
 	@Override
@@ -32,6 +37,11 @@ public class WebConfig
 		configurer.defaultContentType(AlgaMediaTypes.V2_APPLICATION_JSON);
 	}
 
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(apiDeprecationHandler);
+	}
+	
 	@Override
 	public void addCorsMappings(CorsRegistry registry) { // Configura o mapeamento de CORS (Cross-Origin Resource Sharing) para permitir que recursos da API sejam acessados por diferentes origens (domínios). Isso é útil quando a aplicação front-end está hospedada em um domínio diferente do back-end.
 		registry.addMapping("/**")// permite que qualquer origem acesse a API
