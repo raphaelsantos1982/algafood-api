@@ -18,7 +18,7 @@ public class ApiDeprecationHandler implements HandlerInterceptor {
 //					"Essa versão da API está depreciada e deixará de existir a partir de 01/01/2021."
 //							+ "Use a versão mais atual da API.");
 //		}
-		if (request.getRequestURI().startsWith("/v1/")) {
+		if (request.getRequestURI().startsWith("/v2/")) {
 			response.setStatus(HttpStatus.GONE.value());
 			return false;
 		}
