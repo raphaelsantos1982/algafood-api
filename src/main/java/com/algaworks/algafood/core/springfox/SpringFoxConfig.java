@@ -46,6 +46,10 @@ import com.algaworks.algafood.api.v1.openapi.model.PermissoesModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.ProdutosModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.RestaurantesBasicoModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.UsuariosModelOpenApi;
+import com.algaworks.algafood.api.v2.model.CidadeModelV2;
+import com.algaworks.algafood.api.v2.model.CozinhaModelV2;
+import com.algaworks.algafood.api.v2.openapi.model.CidadesModelV2OpenApi;
+import com.algaworks.algafood.api.v2.openapi.model.CozinhasModelV2OpenApi;
 import com.ctc.wstx.shaded.msv_core.util.Uri;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -68,17 +72,18 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 @Import(BeanValidatorPluginsConfiguration.class) // Importa a configuração para que o Swagger reconheça as anotações de validação do Bean Validation e as inclua na documentação da API
 public class SpringFoxConfig {
+	
 
-  private final EstatisticasController estatisticasController;
-	SpringFoxConfig(EstatisticasController estatisticasController) {
-		this.estatisticasController = estatisticasController;
+	private final EstatisticasController estatisticasController;
+		SpringFoxConfig(EstatisticasController estatisticasController) {
+			this.estatisticasController = estatisticasController;
 	}
 
-  @Bean
-  public Docket apiDocketV1() { // Docket(Sumario) -> Configuração do Swagger para gerar documentação da API - Comfigura o conjunto de serviços que devem ser documentados
-	  var typeResolver = new TypeResolver();
+	@Bean
+	public Docket apiDocketV1() { // Docket(Sumario) -> Configuração do Swagger para gerar documentação da API - Comfigura o conjunto de serviços que devem ser documentados
+		var typeResolver = new TypeResolver();
 		
-	  return new Docket(DocumentationType.OAS_30) // OAS_30 -> OpenAPI Specification 3.0
+		return new Docket(DocumentationType.OAS_30) // OAS_30 -> OpenAPI Specification 3.0
 		.groupName("V1")
         .select() // SELECIONA OS ENDPOINTS QUE DEVEM SER DOCUMENTADOS. 
         .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api")) // Configura o pacote base onde estão os controllers da API
@@ -146,7 +151,8 @@ public class SpringFoxConfig {
 			  new Tag("Usuários", "Gerencia os usuários"),
 			  new Tag("Estatísticas", "Estatísticas da AlgaFood"),
 			  new Tag("Permissões", "Gerencia as permissões"));
-  }
+  	}
+  
   
 	@Bean
 	public Docket apiDocketV2() {
@@ -170,7 +176,18 @@ public class SpringFoxConfig {
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.directModelSubstitute(Links.class, LinksModelOpenApi.class)
 
-				.apiInfo(apiInfoV2());
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(PagedModel.class, CozinhaModelV2.class),
+						CozinhasModelV2OpenApi.class))
+
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, CidadeModelV2.class),
+						CidadesModelV2OpenApi.class))
+
+				.apiInfo(apiInfoV2())
+
+				.tags(new Tag("Cidades", "Gerencia as cidades"),
+						new Tag("Cozinhas", "Gerencia as cozinhas"));
 	}
   
   private List<Response> globalPostPutResponseMessages() {
