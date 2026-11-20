@@ -33,12 +33,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { // revisar
 			
 			.and()
 			.authorizeRequests()
-				.antMatchers("/v1/cozinhas/**").permitAll() // autoriza todas as requisições para /v1/cozinhas/** sem necessidade de autenticação
+				.antMatchers("/v1/cozinhas/**").permitAll() // autoriza, sem necessidade de autenticação,  todas as requisições para /v1/cozinhas/** 
 				.anyRequest().authenticated() // autoriza todas as demais requisições apenas se o usuário estiver autenticado
 			
 			.and()
 			.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // define que a aplicação não irá criar sessão de usuário, ou seja, não irá armazenar informações do usuário entre requisições
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // define que a aplicação não irá criar sessão de usuário, ou seja, não irá armazenar informações do usuário entre requisições - sem cookies, sem sessão de usuário, sem estado
 				
 			.and()
 				.csrf().disable(); // desabilita a proteção contra ataques CSRF, que não é necessária em APIs RESTful
