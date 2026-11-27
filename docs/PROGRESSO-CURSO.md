@@ -61,6 +61,17 @@ Os capítulos 1 a 21 aparecem como concluídos no histórico de commits do proje
 
 ---
 
+## Pendências de documentação
+
+Revisar os `.md` em `docs/` a cada subida e atualizar o que estiver desatualizado.
+
+- [ ] Remover de `docs/ARQUITETURA.md` a frase com usuários e senha de teste (commit `3f1413f`, já no `main`).
+- [ ] Verificar e-mails de exemplo com domínio `algafood.com` nos `.md`.
+- [ ] Atualizar `docs/algafood-auth/algafood-auth.md` conforme a autenticação for implementada no curso.
+- [ ] Atualizar `docs/AlgaFood/` quando endpoints ou schemas mudarem.
+
+Nenhum `.md` deve conter usuário, senha ou token.
+
 ## Histórico de atualizações
 
 | Data | O que mudou |
