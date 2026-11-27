@@ -61,6 +61,20 @@ com.algaworks.algafood
 
 ---
 
+### 2.1 Bibliotecas de apoio
+
+| Biblioteca | Para quê |
+|---|---|
+| Lombok | Reduz código repetitivo (getters, builders) nas entidades e DTOs |
+| ModelMapper | Conversão entre entidades e models de entrada/saída |
+| Squiggly | Filtro de campos na resposta (`?campos=...`) |
+| JasperReports | Geração do relatório de vendas em PDF |
+| Freemarker | Templates HTML dos e-mails |
+| AWS SDK for Java 1.x | Acesso ao Amazon S3 |
+| SpringFox 3.0 | Documentação OpenAPI e Swagger UI |
+| Logback + logback-ext-loggly | Envio de logs ao Loggly |
+| Spring HATEOAS | Links HAL nas respostas |
+
 ## 3. Modelo de domínio
 
 ### 3.1 Entidades principais
@@ -125,7 +139,7 @@ Todas as rotas usam JSON (com suporte a HAL). A versão faz parte do caminho.
 | Estados | `/v1/estados` | CRUD |
 | Cidades | `/v1/cidades` | CRUD (depreciado) |
 | Formas de pagamento | `/v1/formas-pagamento` | CRUD |
-| Restaurantes | `/v1/restaurantes` | CRUD, PATCH de campos, ativação/inativação em lote (`/ativacoes`) |
+| Restaurantes | `/v1/restaurantes` | CRUD, PATCH de campos, ativação individual (`/ativo`) e em lote (`/ativacoes`), abertura e fechamento (`/abertura`, `/fechamento`), formas de pagamento e responsáveis |
 | Produtos do restaurante | `/v1/restaurantes/{restauranteId}/produtos` | listar, criar, atualizar |
 | Foto do produto | `/v1/restaurantes/{restauranteId}/produtos/{produtoId}/foto` | consultar, enviar, remover |
 | Formas de pagamento do restaurante | `/v1/restaurantes/{restauranteId}/formas-pagamento` | associar, desassociar |
@@ -192,7 +206,7 @@ Spring Security está habilitado (`core/security/WebSecurityConfig.java`). Estad
 **Pontos de atenção:**
 
 - A configuração usa `WebSecurityConfigurerAdapter`, que está **depreciado** no Spring Security 5.7 (usado pelo Boot 2.7). A forma recomendada é um bean `SecurityFilterChain`.
-- Os usuários `thiago` e `joao` (senha `123`, papel `ADMIN`) estão **fixos no código**. Isso é apenas para estudo.
+- Há usuários de teste **fixos no código**, usados apenas para estudo. Eles não estão documentados aqui.
 - As entidades `Usuario`, `Grupo` e `Permissao` existem no domínio, mas **ainda não são usadas na autenticação**. Para autenticar pelo banco, falta um `UserDetailsService` que leia `Usuario`.
 - Não há controle de autorização por grupo/permissão (`@PreAuthorize` etc.) no estado atual.
 
